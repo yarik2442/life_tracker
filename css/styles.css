@@ -1,0 +1,191 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #f0f2f5;
+  color: #1d1d1f;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
+  padding: 0;
+}
+
+.tab-content {
+  display: none;
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Профиль */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e0e0e0;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.id {
+  font-size: 14px;
+  color: #8e8e93;
+}
+
+/* Задания */
+.tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px 8px;
+  background: white;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.add-btn {
+  width: 44px;
+  height: 44px;
+  background: #007aff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,122,255,0.3);
+}
+
+.tasks-list {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-item {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.task-name {
+  flex: 1;
+  font-size: 16px;
+}
+
+.empty-state {
+  text-align: center;
+  color: #8e8e93;
+  margin-top: 100px;
+  font-size: 16px;
+}
+
+/* Таб-бар */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: white;
+  border-top: 1px solid #e5e5e5;
+  display: flex;
+  box-shadow: 0 -1px 4px rgba(0,0,0,0.04);
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #8e8e93;
+  font-weight: 500;
+}
+
+.tab-item.active {
+  color: #007aff;
+  font-weight: 600;
+}
+
+/* Модалка */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 360px;
+  padding: 24px;
+}
+
+.modal-content h3 {
+  margin: 0 0 16px;
+  text-align: center;
+}
+
+#task-name {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #d1d1d6;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+#cancel-task {
+  background: #e5e5ea;
+  color: #000;
+}
+
+#save-task {
+  background: #007aff;
+  color: white;
+}
