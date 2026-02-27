@@ -18,7 +18,6 @@
       flex-direction: column;
     }
 
-    /* Профиль только на вкладке "Текущие" */
     .profile {
       display: flex;
       align-items: center;
@@ -99,7 +98,6 @@
       font-size: 16px;
     }
 
-    /* Таб-бар */
     .tab-bar {
       position: fixed;
       bottom: 0;
@@ -128,7 +126,6 @@
       font-weight: 600;
     }
 
-    /* Модалка */
     .modal {
       display: none;
       position: fixed;
@@ -189,10 +186,19 @@
 </head>
 <body>
 
-  <!-- Контент вкладок -->
+  <!-- Профиль отображается ТОЛЬКО на вкладке "Текущие" -->
+  <div id="profile" class="profile" style="display: none;">
+    <img id="avatar" class="avatar" src="" alt="Аватар">
+    <div>
+      <div id="fullname" class="name">Загрузка...</div>
+      <div id="userid" class="id">ID: —</div>
+    </div>
+  </div>
+
+  <!-- Контейнер вкладок -->
   <div class="container">
 
-    <!-- Вкладка "Текущие" — только профиль + пусто -->
+    <!-- Вкладка "Текущие" — только профиль сверху + пусто -->
     <div id="current" class="tab-content active">
       <div class="profile">
         <img id="avatar" class="avatar" src="" alt="Аватар">
@@ -201,9 +207,8 @@
           <div id="userid" class="id">ID: —</div>
         </div>
       </div>
-
       <!-- Пустое пространство -->
-      <div style="height: 200px;"></div> <!-- просто чтобы не прижималось к верху -->
+      <div style="height: 200px;"></div>
     </div>
 
     <!-- Вкладка "Задания" — без профиля сверху -->
@@ -243,7 +248,7 @@
     </div>
   </div>
 
-  <!-- Модалка для задач -->
+  <!-- Модалка только для задач -->
   <div id="add-task-modal" class="modal">
     <div class="modal-content">
       <h3>Новая задача</h3>
