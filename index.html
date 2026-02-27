@@ -18,6 +18,7 @@
       flex-direction: column;
     }
 
+    /* Профиль — всегда сверху, не дублируется */
     .profile {
       display: flex;
       align-items: center;
@@ -25,6 +26,9 @@
       padding: 16px;
       background: white;
       border-bottom: 1px solid #e5e5e5;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .avatar {
@@ -188,7 +192,7 @@
 </head>
 <body>
 
-  <!-- Профиль (на вкладке "Текущие") -->
+  <!-- Профиль — отображается всегда сверху -->
   <div class="profile">
     <img id="avatar" class="avatar" src="" alt="Аватар">
     <div>
@@ -200,16 +204,15 @@
   <!-- Основной контент -->
   <div class="container">
 
-    <!-- Вкладка "Текущие" (пока просто профиль + текст) -->
+    <!-- Вкладка "Текущие" — только пустое пространство + приветствие -->
     <div id="current" class="tab-content active">
-      <div style="text-align: center; margin-top: 60px; color: #8e8e93;">
-        <h2>Добро пожаловать!</h2>
-        <p>Это твоя главная страница</p>
-        <p>Здесь скоро появится обзор дня</p>
+      <div style="text-align: center; margin-top: 120px; color: #8e8e93;">
+        <h2>Текущие</h2>
+        <p>Здесь скоро будет обзор дня,<br>стрики и быстрый доступ к важному</p>
       </div>
     </div>
 
-    <!-- Вкладка "Задания" -->
+    <!-- Вкладка "Задания" — полноценная с добавлением задач -->
     <div id="tasks" class="tab-content">
       <div class="tab-header">
         <h2>Задания на сегодня</h2>
@@ -226,7 +229,7 @@
 
   </div>
 
-  <!-- Нижний таб-бар — только две вкладки -->
+  <!-- Нижний таб-бар -->
   <div class="tab-bar">
     <div class="tab-item active" data-tab="current">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -246,7 +249,7 @@
     </div>
   </div>
 
-  <!-- Модалка только для задач -->
+  <!-- Модалка для задач -->
   <div id="add-task-modal" class="modal">
     <div class="modal-content">
       <h3>Новая задача</h3>
@@ -282,9 +285,7 @@
         document.getElementById('avatar').src = user.photo_url || 'https://t.me/i/userpic/320/default_avatar.jpg';
       }
 
-      // ──────────────────────────────────────────────
-      // Логика вкладок
-      // ──────────────────────────────────────────────
+      // Переключение вкладок
       const tabs = document.querySelectorAll('.tab-item');
       const contents = document.querySelectorAll('.tab-content');
 
@@ -297,9 +298,7 @@
         });
       });
 
-      // ──────────────────────────────────────────────
-      // Задания (только на сегодня)
-      // ──────────────────────────────────────────────
+      // Задания на сегодня
       let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
 
       const tasksList = document.getElementById('tasks-list');
@@ -372,7 +371,6 @@
         if (e.target === modal) modal.style.display = 'none';
       });
 
-      // Первая отрисовка задач
       renderTasks();
     });
   </script>
