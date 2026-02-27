@@ -18,7 +18,7 @@
       flex-direction: column;
     }
 
-    /* Профиль всегда сверху */
+    /* Профиль только на вкладке "Текущие" */
     .profile {
       display: flex;
       align-items: center;
@@ -26,9 +26,6 @@
       padding: 16px;
       background: white;
       border-bottom: 1px solid #e5e5e5;
-      position: sticky;
-      top: 0;
-      z-index: 10;
     }
 
     .avatar {
@@ -192,27 +189,24 @@
 </head>
 <body>
 
-  <!-- Профиль — всегда сверху -->
-  <div class="profile">
-    <img id="avatar" class="avatar" src="" alt="Аватар">
-    <div>
-      <div id="fullname" class="name">Загрузка...</div>
-      <div id="userid" class="id">ID: —</div>
-    </div>
-  </div>
-
   <!-- Контент вкладок -->
   <div class="container">
 
-    <!-- Вкладка "Текущие" — пустая, только приветствие -->
+    <!-- Вкладка "Текущие" — только профиль + пусто -->
     <div id="current" class="tab-content active">
-      <div style="text-align: center; margin-top: 120px; color: #8e8e93;">
-        <h2>Текущие</h2>
-        <p>Здесь пока пусто</p>
+      <div class="profile">
+        <img id="avatar" class="avatar" src="" alt="Аватар">
+        <div>
+          <div id="fullname" class="name">Загрузка...</div>
+          <div id="userid" class="id">ID: —</div>
+        </div>
       </div>
+
+      <!-- Пустое пространство -->
+      <div style="height: 200px;"></div> <!-- просто чтобы не прижималось к верху -->
     </div>
 
-    <!-- Вкладка "Задания" — добавление и список задач на сегодня -->
+    <!-- Вкладка "Задания" — без профиля сверху -->
     <div id="tasks" class="tab-content">
       <div class="tab-header">
         <h2>Задания на сегодня</h2>
@@ -249,7 +243,7 @@
     </div>
   </div>
 
-  <!-- Модалка для добавления задачи -->
+  <!-- Модалка для задач -->
   <div id="add-task-modal" class="modal">
     <div class="modal-content">
       <h3>Новая задача</h3>
@@ -347,4 +341,33 @@
         taskInput.focus();
       });
 
-      cancelBtn
+      cancelBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      saveBtn.addEventListener('click', () => {
+        const name = taskInput.value.trim();
+        if (name) {
+          const today = new Date().toISOString().split('T')[0];
+          tasks.push({
+            id: Date.now(),
+            name,
+            done: false,
+            date: today
+          });
+          localStorage.setItem('tasks', JSON.stringify(tasks));
+          renderTasks();
+          modal.style.display = 'none';
+        }
+      });
+
+      modal.addEventListener('click', e => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+
+      renderTasks();
+    });
+  </script>
+
+</body>
+</html>
