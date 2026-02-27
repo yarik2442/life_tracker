@@ -8,100 +8,175 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #f0f2f5;
-      color: #1d1d1f;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    <body>
 
-    .profile {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 16px 8px;
-      background: white;
-      border-bottom: 1px solid #e5e5e5;
-    }
+  <!-- Профиль -->
+  <div class="profile">
+    <img id="avatar" class="avatar" src="" alt="Аватар">
+    <div>
+      <div id="fullname" class="name">Загрузка...</div>
+      <div id="userid" class="id">ID: —</div>
+    </div>
+  </div>
 
-    .avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #e0e0e0;
-    }
+  <!-- Основной контент -->
+  <div class="container">
 
-    .name {
-      font-weight: 600;
-      font-size: 17px;
-    }
+    <!-- Вкладка Привычки -->
+    <div id="habits" class="tab-content active">
+      <div class="tab-header">
+        <h2>Привычки</h2>
+        <button id="add-habit-btn" class="add-btn">+</button>
+      </div>
 
-    .id {
-      font-size: 13px;
-      color: #8e8e93;
-    }
+      <div id="habits-list" class="habits-list">
+        <!-- сюда будут добавляться карточки привычек -->
+      </div>
 
-    .container {
-      flex: 1;
-      padding: 16px;
-    }
+      <div id="no-habits" class="empty-state">
+        Пока нет привычек<br>Нажми «+», чтобы добавить первую
+      </div>
+    </div>
 
-    .tab-content {
-      display: none;
-    }
+    <!-- остальные вкладки остаются как были -->
+    <div id="tasks" class="tab-content">...</div>
+    <div id="schedule" class="tab-content">...</div>
+    <div id="progress" class="tab-content">...</div>
 
-    .tab-content.active {
-      display: block;
-    }
+  </div>
 
-    .empty-state {
-      text-align: center;
-      color: #8e8e93;
-      margin-top: 80px;
-      font-size: 16px;
-    }
+  <!-- Нижняя панель вкладок (без изменений) -->
+  <div class="tab-bar">
+    <!-- ... как было ... -->
+  </div>
 
-    /* Вкладки внизу */
-    .tab-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      background: white;
-      border-top: 1px solid #e5e5e5;
-      display: flex;
-      box-shadow: 0 -1px 4px rgba(0,0,0,0.04);
-    }
+  <!-- Модальное окно для добавления привычки -->
+  <div id="add-habit-modal" class="modal">
+    <div class="modal-content">
+      <h3>Новая привычка</h3>
+      <input type="text" id="habit-name" placeholder="Например: Пить 2 л воды" autocomplete="off">
+      <div class="modal-buttons">
+        <button id="cancel-habit">Отмена</button>
+        <button id="save-habit">Добавить</button>
+      </div>
+    </div>
+  </div>
 
-    .tab-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      color: #8e8e93;
-      cursor: pointer;
-      user-select: none;
-      transition: color 0.15s;
-    }
+  <script>
+    // ──────────────────────────────────────────────
+    // 1. Загрузка Telegram + профиль (как было)
+    // ──────────────────────────────────────────────
+    window.addEventListener('load', function() {
+      if (!window.Telegram?.WebApp) {
+        document.getElementById('fullname').textContent = 'Не Telegram';
+        return;
+      }
 
-    .tab-item.active {
-      color: #007aff;
-      font-weight: 600;
-    }
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand();
 
-    .tab-item span {
-      margin-top: 3px;
-    }
-  </style>
-</head>
-<body>
+      if (tg.themeParams) {
+        document.body.style.background = tg.themeParams.bg_color || '#f0f2f5';
+        document.body.style.color = tg.themeParams.text_color || '#1d1d1f';
+      }
+
+      const user = tg.initDataUnsafe?.user;
+      if (user) {
+        const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+        document.getElementById('fullname').textContent = fullName || 'Без имени';
+        document.getElementById('userid').textContent = 'ID: ' + user.id;
+        document.getElementById('avatar').src = user.photo_url || 'https://t.me/i/userpic/320/default_avatar.jpg';
+      }
+
+      // ──────────────────────────────────────────────
+      // 2. Логика вкладок (как было)
+      // ──────────────────────────────────────────────
+      const tabs = document.querySelectorAll('.tab-item');
+      const contents = document.querySelectorAll('.tab-content');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+        });
+      });
+
+      // ──────────────────────────────────────────────
+      // 3. Работа с привычками (новое)
+      // ──────────────────────────────────────────────
+      let habits = JSON.parse(localStorage.getItem('habits') || '[]');
+
+      const habitsList = document.getElementById('habits-list');
+      const noHabits = document.getElementById('no-habits');
+      const addBtn = document.getElementById('add-habit-btn');
+      const modal = document.getElementById('add-habit-modal');
+      const habitInput = document.getElementById('habit-name');
+      const saveBtn = document.getElementById('save-habit');
+      const cancelBtn = document.getElementById('cancel-habit');
+
+      function renderHabits() {
+        habitsList.innerHTML = '';
+        if (habits.length === 0) {
+          noHabits.style.display = 'block';
+        } else {
+          noHabits.style.display = 'none';
+          habits.forEach(habit => {
+            const div = document.createElement('div');
+            div.className = 'habit-item';
+            div.innerHTML = `
+              <div class="habit-name">${habit.name}</div>
+              <div class="habit-streak">Стрик: ${habit.streak || 0} дн</div>
+            `;
+            habitsList.appendChild(div);
+          });
+        }
+      }
+
+      function saveHabits() {
+        localStorage.setItem('habits', JSON.stringify(habits));
+      }
+
+      // Показать модалку
+      addBtn.addEventListener('click', () => {
+        modal.style.display = 'flex';
+        habitInput.value = '';
+        habitInput.focus();
+      });
+
+      // Закрыть модалку
+      cancelBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      // Сохранить привычку
+      saveBtn.addEventListener('click', () => {
+        const name = habitInput.value.trim();
+        if (name) {
+          habits.push({
+            id: Date.now(),
+            name: name,
+            streak: 0,
+            created: new Date().toISOString()
+          });
+          saveHabits();
+          renderHabits();
+          modal.style.display = 'none';
+        }
+      });
+
+      // Закрытие по клику вне модалки
+      modal.addEventListener('click', e => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+
+      // Первая отрисовка
+      renderHabits();
+    });
+  </script>
+</body>
 
   <!-- Профиль вверху -->
   <div class="profile">
