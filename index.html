@@ -18,6 +18,22 @@
       flex-direction: column;
     }
 
+    .container {
+      flex: 1;
+      padding: 0;
+    }
+
+    .tab-content {
+      display: none;
+      min-height: 100vh;
+      background: #f0f2f5;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Профиль только для вкладки "Текущие" */
     .profile {
       display: flex;
       align-items: center;
@@ -45,16 +61,14 @@
       color: #8e8e93;
     }
 
-    .container {
-      flex: 1;
-      padding: 16px;
-    }
-
+    /* Задания */
     .tab-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      padding: 16px 16px 8px;
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
     }
 
     .add-btn {
@@ -71,6 +85,7 @@
     }
 
     .tasks-list {
+      padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -98,6 +113,7 @@
       font-size: 16px;
     }
 
+    /* Таб-бар */
     .tab-bar {
       position: fixed;
       bottom: 0;
@@ -126,6 +142,7 @@
       font-weight: 600;
     }
 
+    /* Модалка */
     .modal {
       display: none;
       position: fixed;
@@ -186,16 +203,6 @@
 </head>
 <body>
 
-  <!-- Профиль отображается ТОЛЬКО на вкладке "Текущие" -->
-  <div id="profile" class="profile" style="display: none;">
-    <img id="avatar" class="avatar" src="" alt="Аватар">
-    <div>
-      <div id="fullname" class="name">Загрузка...</div>
-      <div id="userid" class="id">ID: —</div>
-    </div>
-  </div>
-
-  <!-- Контейнер вкладок -->
   <div class="container">
 
     <!-- Вкладка "Текущие" — только профиль сверху + пусто -->
@@ -207,11 +214,13 @@
           <div id="userid" class="id">ID: —</div>
         </div>
       </div>
-      <!-- Пустое пространство -->
-      <div style="height: 200px;"></div>
+      <!-- Пустое место ниже профиля -->
+      <div style="height: 300px; display: flex; align-items: center; justify-content: center; color: #8e8e93;">
+        Пока здесь ничего нет
+      </div>
     </div>
 
-    <!-- Вкладка "Задания" — без профиля сверху -->
+    <!-- Вкладка "Задания" — без профиля -->
     <div id="tasks" class="tab-content">
       <div class="tab-header">
         <h2>Задания на сегодня</h2>
@@ -248,7 +257,7 @@
     </div>
   </div>
 
-  <!-- Модалка только для задач -->
+  <!-- Модалка для задач -->
   <div id="add-task-modal" class="modal">
     <div class="modal-content">
       <h3>Новая задача</h3>
